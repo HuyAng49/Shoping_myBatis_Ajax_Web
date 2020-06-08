@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hxzy.dao.GoodsDao">
+    <resultMap id="BaseResultMap" type="com.hxzy.entity.Goods">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="productIcon" jdbcType="VARCHAR" property="productIcon"/>
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="productTypes" jdbcType="VARCHAR" property="productTypes"/>
+        <result column="univalence" jdbcType="REAL" property="univalence"/>
+        <result column="storage" jdbcType="INTEGER" property="storage"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, productIcon, productName, productTypes, univalence, storage
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+    </select>
+    <select id="selectByLimitMap" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        LIMIT #{pageNum,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="selectByLimitInt" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from goods
+        LIMIT #{pageNum,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="selectCount" resultType="java.lang.Integer">
+        select
+        count(1)
+        from goods
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from goods
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.hxzy.entity.Goods">
+        insert into goods (id, productIcon, productName,
+        productTypes, univalence, storage
+        )
+        values (#{id,jdbcType=INTEGER}, #{productIcon,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+        #{productTypes,jdbcType=VARCHAR}, #{univalence,jdbcType=REAL}, #{storage,jdbcType=INTEGER}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.hxzy.entity.Goods">
+        insert into goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="productIcon != null">
+                productIcon,
+            </if>
+            <if test="productName != null">
+                productName,
+            </if>
+            <if test="productTypes != null">
+                productTypes,
+            </if>
+            <if test="univalence != null">
+                univalence,
+            </if>
+            <if test="storage != null">
+                storage,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="productIcon != null">
+                #{productIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="productTypes != null">
+                #{productTypes,jdbcType=VARCHAR},
+            </if>
+            <if test="univalence != null">
+                #{univalence,jdbcType=REAL},
+            </if>
+            <if test="storage != null">
+                #{storage,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hxzy.entity.Goods">
+        update goods
+        <set>
+            <if test="productIcon != null">
+                productIcon = #{productIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                productName = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="productTypes != null">
+                productTypes = #{productTypes,jdbcType=VARCHAR},
+            </if>
+            <if test="univalence != null">
+                univalence = #{univalence,jdbcType=REAL},
+            </if>
+            <if test="storage != null">
+                storage = #{storage,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hxzy.entity.Goods">
+        update goods
+        set productIcon = #{productIcon,jdbcType=VARCHAR},
+        productName = #{productName,jdbcType=VARCHAR},
+        productTypes = #{productTypes,jdbcType=VARCHAR},
+        univalence = #{univalence,jdbcType=REAL},
+        storage = #{storage,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品详情</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+
+    <style>
+
+        #exampleModal {
+            text-align: center;
+        }
+
+        #myTable {
+            text-align: center;
+        }
+
+        #myTable td {
+            vertical-align: middle;
+        }
+
+        #myTable a {
+            color: white;
+        }
+
+        #photo {
+            width: 0px;
+            height: 0px;
+        }
+
+        .custom-file-label {
+            width: 76px;
+            height: 36px;
+            margin-left: 290px;
+            margin-top: 50px;
+        }
+
+
+    </style>
+</head>
+<body>
+<table id="myTable" class="table table-hover">
+    <thead>
+    <tr class="table-info">
+        <th scope="col">#序号</th>
+        <th scope="col">id</th>
+        <th scope="col">product_Icon</th>
+        <th scope="col">product_Name</th>
+        <th scope="col">product_Types</th>
+        <th scope="col">univalence</th>
+        <th scope="col">storage</th>
+        <th scope="col" style="padding: 5px;">
+            <a onclick="insert()" class="btn btn-success" style="color: white;width: 120px;">新建</a>
+        </th>
+    </tr>
+    </thead>
+</table>
+<nav id="NavBar" aria-label="Page navigation example"></nav>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+            </div>
+            <form id="myForm" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="goodsId">商品编号</span>
+                        </div>
+                        <input type="number" name="id" class="form-control" placeholder="商品编号"
+                               aria-describedby="addon-wrapping">
+                    </div>
+                    <br>
+                    <div class="input-group mb-3" style="height: 100px;">
+                        <img style="width: 90px;height: 100px;float: left;" name="img" id="img" src="" alt="">
+                        <div class="custom-file">
+                            <label class="custom-file-label" name="photo" for="photo"
+                                   aria-describedby="inputGroupFileAddon02">
+                                <input type="file" name="photo" class="custom-file-input" id="photo" accept="imge/*">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="goodsName">商品名称</span>
+                        </div>
+                        <input type="text" name="productName" class="form-control" placeholder="商品名称"
+                               aria-label="product_Name"
+                               aria-describedby="addon-wrapping">
+                    </div>
+                    <br>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="productTypes">商品类型</label>
+                        </div>
+                        <select name="productTypes" class="custom-select" id="productTypes">
+                            <option selected>请选择</option>
+                            <option value="1A1A">1A1A</option>
+                            <option value="1A2B3C4D">1A2B3C4D</option>
+                            <option value="ABAB">ABAB</option>
+                        </select>
+                    </div>
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="univalence">商品单价</span>
+                        </div>
+                        <input type="number" name="univalence" class="form-control" placeholder="商品单价"
+                               aria-describedby="addon-wrapping">
+                    </div>
+                    <br>
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="storage">商品库存</span>
+                        </div>
+                        <input type="number" name="storage" class="form-control" placeholder="商品库存"
+                               aria-describedby="addon-wrapping">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button id="saveit" type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+
+    //总页数
+    var totalPage = 0;
+    //当前页
+    var pageNum = 1;
+
+    var cons = [
+        {"name": "id", "type": "number"},
+        {"name": "img", "type": "img"},
+        {"name": "productName", "type": "text"},
+        {"name": "productTypes", "type": "select"},
+        {"name": "univalence", "type": "number"},
+        {"name": "storage", "type": "number"},
+    ];
+
+
+    $(function () {
+
+
+        var pageSize = 5;
+
+        index(pageNum, pageSize);
+
+
+        $(document).on("click", "li a", function () {
+
+            pageNum = $(this).attr("date-pageNum");
+
+            if ($(this).attr('id') == 'NavBarOne') {
+                pageNum = 1;
+                index(pageNum, pageSize);
+            } else if ($(this).attr('id') == 'NavBarLast') {
+                pageNum = totalPage;
+                index(pageNum, pageSize);
+            } else if ($(this).attr('id') == 'NavBarPrevious') {
+                pageNum = $(this).attr("date-pageNum") - 1;
+                index(pageNum, pageSize);
+            } else if ($(this).attr('id') == 'NavBarNext') {
+                pageNum = $(this).attr("date-pageNum") + 1;
+                index(pageNum, pageSize);
+            } else {
+                pageNum = $(this).attr("date-pageNum");
+                index(pageNum, pageSize);
+            }
+        });
+
+    });
+
+    function nav_callback(totalPage) {
+        $("#NavBar ul").remove();
+        var ul = "";
+        ul += "<ul class='pagination justify-content-center'><li class='page-item'>";
+        ul += "<a id='NavBarOne' class='page-link' href='#' tabindex='-1' aria-disabled='true'>Home</a></li>";
+        ul += "<li class='page-item'><a id='NavBarPrevious' class='page-link' href='#'>Previous</a></li>";
+        if (totalPage > 5) {
+            for (var i = 1; i <= 5; i++) {
+                ul += "<li class='page-item'><a class='page-link' href='#' date-pageNum='" + i + "'>" + i + "</a></li>";
+            }
+        } else {
+            for (var i = 1; i <= totalPage; i++) {
+                ul += "<li class='page-item'><a class='page-link' href='#' date-pageNum='" + i + "'>" + i + "</a></li>";
+            }
+        }
+        ul += "<li class='page-item'><a id='NavBarNext' class='page-link' href='#'>Next</a></li>";
+        ul += "<li class='page-item'><a id='NavBarLast' class='page-link' href='#'>Last</a></li></ul>";
+
+        $("#NavBar").append($(ul));
+    }
+
+    function index(pageNum, pageSize) {
+        //总记录数
+        var totalRecord = 0;
+        $("#myTable tr:gt(0)").remove();
+        $.post(getRootPath() + "/shoping", {
+            "method": "index",
+            "pageNum": pageNum,
+            "pageSize": pageSize
+        }, function (data) {
+            data = JSON.parse(data);
+            if (data.code == 1) {
+                var goods = data.pb.list;
+                for (var i = 0; i < goods.length; i++) {
+                    var tr = "";
+                    tr += "<tbody><tr><td>" + (i + 1) + "</td>";
+                    tr += "<td>" + goods[i].id + "</td>";
+                    tr += "<td><img  style='width: 90px;height: 90px;' src='" + goods[i].productIcon + "'></td>";
+                    tr += "<td>" + goods[i].productName + "</td>";
+                    tr += "<td>" + goods[i].productTypes + "</td>";
+                    tr += "<td>" + goods[i].univalence + "</td>";
+                    tr += "<td>" + goods[i].storage + "</td>";
+                    tr += "<td><a onclick='update(this)' class='btn btn-warning'>修改</a> ";
+                    tr += "<a onclick='remove()' class='btn btn-danger'>删除</a></td>";
+                    tr += "</tr></tbody>";
+                    $("#myTable").append($(tr));
+                }
+                totalPage = data.pb.totalPage;
+                nav_callback(totalPage);
+            }
+        });
+    }
+
+
+    function insert() {
+        $("input[name]").val("");
+        $("form[id='myForm']")[0].action = (getRootPath() + "/shoping?method=insert");
+        $("#exampleModal").modal("show");
+    }
+
+    function update(a) {
+
+        $(a).parents("tr").children(":gt(0),:gt(6)").each(function (i, e) {
+
+            if (cons[i].type == "text" || cons[i].type == "number") {
+                $(document.getElementsByName(cons[i].name)).val($(e).html());
+            } else if (cons[i].type == "img") {
+                $(document.getElementsByName(cons[i].name)).attr("src", $(e).find("img").attr("src"));
+            } else if (cons[i].type == "select") {
+                $(document.getElementsByName(cons[i].name)).find("option").each(function (i, f) {
+                    if ($(f).val() == $(e).html()) {
+                        $(f).prop("selected", true);
+                        return false;
+                    }
+                })
+            }
+            // // $("form[name='path']")[0].action = getRootPath() + "/shoping?method=update&id=" + id;
+            // // 获取页面已有的一个form表单
+            $("#exampleModal").modal("show");
+        });
+
+    }
+
+    function remove() {
+        console.log("remove");
+    }
+
+    $("#photo").change(function () {
+        $("#img").attr("src", URL.createObjectURL($(this)[0].files[0]));
+    });
+
+    //js获取项目根路径，如： http://localhost:8083/uimcardprj
+    function getRootPath() {
+        //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = window.document.location.href;
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
+    }
+</script>
+</html>
